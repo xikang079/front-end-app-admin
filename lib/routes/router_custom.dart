@@ -1,20 +1,20 @@
 import 'package:get/get.dart';
 import '../bindings/auth_bindings.dart';
+import '../bindings/crab_purchase_bindings.dart';
+import '../bindings/crab_type_bindings.dart';
+import '../bindings/daily_summary_bindings.dart';
+import '../bindings/trader_bindings.dart';
 import '../bindings/user_binding.dart';
-import '../controllers/crab_purchase_controller.dart';
-import '../controllers/crab_type_controller.dart';
+import '../pages/CrabPurchaseManagementPage/crab_purchase_management_page.dart';
+import '../pages/crabTraderManagementPage/crab_trader_management_page.dart';
+import '../pages/crabTypeManagementPage/crab_type_management_page.dart';
+import '../pages/dailyReportManagementPage/daily_summary_management_page.dart';
 import '../pages/homePage/home_page.dart';
+import '../pages/loginPage/login_page.dart';
+import '../pages/managmentUserPage/managment_user_page.dart';
 import '../pages/managmentUserPage/user_management_options_page.dart';
 import '../pages/rootPage/root_page.dart';
-import '../pages/managmentSummaryDailyPage/managment_summary_daily_page.dart';
-import '../pages/managmentUserPage/managment_user_page.dart';
 import '../pages/settingPage/setting_page.dart';
-import '../pages/loginPage/login_page.dart';
-import '../pages/invoiceManagementPage/invoice_management_page.dart';
-import '../pages/crabTraderManagementPage/crab_trader_management_page.dart';
-import '../pages/dailyReportManagementPage/daily_report_management_page.dart';
-import '../pages/crabTypeManagementPage/crab_type_management_page.dart';
-import '../controllers/trader_controller.dart';
 
 class AppRoutes {
   static final routes = [
@@ -36,10 +36,6 @@ class AppRoutes {
       page: () => LoginPage(),
     ),
     GetPage(
-      name: '/management-summary-daily',
-      page: () => const ManagmentSummaryDailyPage(),
-    ),
-    GetPage(
       name: '/management-user',
       page: () => const ManagmentUserPage(),
     ),
@@ -48,36 +44,29 @@ class AppRoutes {
       page: () => const SettingPage(),
     ),
     GetPage(
-      name: '/crab-trader-management',
-      page: () => const TraderManagementPage(),
-    ),
-    GetPage(
-      name: '/invoice-management',
-      page: () => InvoiceManagementPage(depotId: Get.parameters['depotId']!),
-    ),
-    GetPage(
-      name: '/daily-report-management',
-      page: () =>
-          DailyReportManagementPage(depotId: Get.parameters['depotId']!),
+      name: '/user-management-options',
+      page: () => UserManagementOptionsPage(),
+      bindings: const [],
     ),
     GetPage(
       name: '/crab-type-management',
       page: () => const CrabTypeManagementPage(),
-      bindings: [
-        BindingsBuilder(() {
-          Get.put(CrabTypeController());
-        })
-      ],
+      binding: CrabTypeBinding(),
     ),
     GetPage(
-      name: '/user-management-options',
-      page: () => UserManagementOptionsPage(),
-      bindings: [
-        BindingsBuilder(() {
-          Get.put(TraderController());
-          Get.put(CrabPurchaseController());
-        })
-      ],
+      name: '/trader-management',
+      page: () => const TraderManagementPage(),
+      binding: TraderBinding(),
+    ),
+    GetPage(
+      name: '/crab-purchase-management',
+      page: () => const CrabPurchaseManagementPage(),
+      binding: CrabPurchaseBinding(),
+    ),
+    GetPage(
+      name: '/daily-summary-management',
+      page: () => DailySummaryManagementPage(),
+      binding: DailySummaryBinding(),
     ),
   ];
 }

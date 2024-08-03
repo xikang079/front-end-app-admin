@@ -18,7 +18,9 @@ class ApiServiceCrabType {
     _dio.interceptors.add(InterceptorsWrapper(
       onRequest: (options, handler) async {
         String? token = await LocalStorageService.getToken();
+        String? userId = await LocalStorageService.getUserId();
         options.headers['Authorization'] = 'Bearer $token';
+        options.headers['x-user-id'] = userId;
         return handler.next(options);
       },
       onResponse: (response, handler) {
@@ -30,9 +32,9 @@ class ApiServiceCrabType {
     ));
   }
 
-  Future<List<CrabType>> getAllCrabTypes() async {
+  Future<List<CrabType>> getAllCrabTypes(String depotId) async {
     try {
-      Response response = await _dio.get('/');
+      Response response = await _dio.get('/by-depot/$depotId');
       if (response.statusCode == 200) {
         var data = response.data['message']['metadata'];
         if (data != null && data is List) {

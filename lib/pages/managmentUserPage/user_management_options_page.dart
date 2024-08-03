@@ -24,29 +24,31 @@ class UserManagementOptionsPage extends StatelessWidget {
               icon: FontAwesomeIcons.cubes,
               colors: [Colors.blue, Colors.blue.shade700],
               routeName: '/crab-type-management',
+              depotId: user.id,
             ),
             _buildManagementCard(
               context,
               title: 'Quản lý hóa đơn theo ngày',
               icon: FontAwesomeIcons.receipt,
               colors: [Colors.blue, Colors.blue.shade700],
-              routeName: '/invoice-management',
-              arguments: {'depotId': user.id},
+              routeName: '/crab-purchase-management',
+              depotId: user.id,
             ),
             _buildManagementCard(
               context,
               title: 'Quản lý báo cáo theo ngày',
               icon: FontAwesomeIcons.fileCircleCheck,
               colors: [Colors.blue, Colors.blue.shade700],
-              routeName: '/daily-report-management',
-              arguments: {'depotId': user.id},
+              routeName: '/daily-summary-management',
+              depotId: user.id,
             ),
             _buildManagementCard(
               context,
               title: 'Quản lý lái cua của vựa',
               icon: FontAwesomeIcons.houseUser,
               colors: [Colors.blue, Colors.blue.shade700],
-              routeName: '/crab-trader-management',
+              routeName: '/trader-management',
+              depotId: user.id,
             ),
           ],
         ),
@@ -59,7 +61,7 @@ class UserManagementOptionsPage extends StatelessWidget {
       required IconData icon,
       required List<Color> colors,
       required String routeName,
-      Map<String, dynamic>? arguments}) {
+      required String depotId}) {
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 8.0),
       elevation: 4,
@@ -87,7 +89,7 @@ class UserManagementOptionsPage extends StatelessWidget {
           ),
           trailing: const Icon(Icons.arrow_forward_ios, color: Colors.white),
           onTap: () {
-            Get.toNamed(routeName, arguments: arguments);
+            Get.toNamed(routeName, arguments: {'depotId': depotId});
           },
         ),
       ),

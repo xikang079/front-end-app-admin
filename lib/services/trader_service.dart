@@ -31,9 +31,9 @@ class ApiServiceTrader {
     ));
   }
 
-  Future<List<Trader>> getAllTraders() async {
+  Future<List<Trader>> getAllTraders(String depotId) async {
     try {
-      Response response = await _dio.get('/');
+      Response response = await _dio.get('/by-depot/$depotId');
       if (response.statusCode == 200) {
         var data = response.data['message']['metadata'];
         if (data != null && data is List) {

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../managmentSummaryDailyPage/managment_summary_daily_page.dart';
 import '../managmentUserPage/managment_user_page.dart';
 import '../settingPage/setting_page.dart';
 
@@ -15,7 +14,6 @@ class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
 
   static const List<Widget> _widgetOptions = <Widget>[
-    ManagmentSummaryDailyPage(),
     ManagmentUserPage(),
     SettingPage(),
   ];
@@ -34,10 +32,6 @@ class _HomePageState extends State<HomePage> {
       ),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.dashboard),
-            label: 'Tóm tắt hàng ngày',
-          ),
           BottomNavigationBarItem(
             icon: Icon(Icons.people),
             label: 'Quản lý vựa cua',

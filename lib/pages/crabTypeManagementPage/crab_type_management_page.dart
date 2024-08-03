@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:sticky_headers/sticky_headers.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:sticky_headers/sticky_headers.dart';
 
-import '../../apps/apps_colors.dart';
 import '../../apps/format_vnd.dart';
 import '../../controllers/crab_type_controller.dart';
 
@@ -12,37 +11,25 @@ class CrabTypeManagementPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final CrabTypeController crabTypeController = Get.put(CrabTypeController());
+    final CrabTypeController crabTypeController =
+        Get.find<CrabTypeController>();
 
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'Quản lí loại cua',
-          style: TextStyle(
-            color: Colors.white,
-          ),
+          'Quản lý loại cua',
+          style: TextStyle(fontSize: 22),
         ),
-        actions: [
-          IconButton(
-            icon: const Icon(
-              Icons.refresh,
-              color: Colors.white,
-              size: 30,
-            ),
-            onPressed: () {
-              crabTypeController.fetchCrabTypes();
-            },
-          ),
-        ],
-        backgroundColor: AppColors.primaryColor,
       ),
       body: Obx(() {
         if (crabTypeController.isLoading.value) {
           return _buildShimmerEffect();
         }
+
         if (crabTypeController.crabTypes.isEmpty) {
           return const Center(child: Text('Không có loại cua nào'));
         }
+
         return SingleChildScrollView(
           scrollDirection: Axis.vertical,
           child: Padding(
@@ -51,8 +38,10 @@ class CrabTypeManagementPage extends StatelessWidget {
               header: Table(
                 border: TableBorder.all(color: Colors.black54, width: 1),
                 columnWidths: const {
-                  0: FlexColumnWidth(2),
-                  1: FlexColumnWidth(2),
+                  0: FlexColumnWidth(0.7),
+                  1: FlexColumnWidth(1.5),
+                  2: FlexColumnWidth(2),
+                  3: FlexColumnWidth(1.5),
                 },
                 children: [
                   TableRow(
@@ -61,17 +50,33 @@ class CrabTypeManagementPage extends StatelessWidget {
                       TableCell(
                         child: Padding(
                           padding: EdgeInsets.all(8.0),
-                          child: Text('Tên loại cua',
+                          child: Text('STT',
                               style: TextStyle(
-                                  fontSize: 20, fontWeight: FontWeight.bold)),
+                                  fontSize: 16, fontWeight: FontWeight.bold)),
                         ),
                       ),
                       TableCell(
                         child: Padding(
                           padding: EdgeInsets.all(8.0),
-                          child: Text('Giá cua/KG',
+                          child: Text('Loại cua',
                               style: TextStyle(
-                                  fontSize: 20, fontWeight: FontWeight.bold)),
+                                  fontSize: 18, fontWeight: FontWeight.bold)),
+                        ),
+                      ),
+                      TableCell(
+                        child: Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: Text('Giá',
+                              style: TextStyle(
+                                  fontSize: 18, fontWeight: FontWeight.bold)),
+                        ),
+                      ),
+                      TableCell(
+                        child: Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: Text('Đang có',
+                              style: TextStyle(
+                                  fontSize: 18, fontWeight: FontWeight.bold)),
                         ),
                       ),
                     ],
@@ -81,61 +86,104 @@ class CrabTypeManagementPage extends StatelessWidget {
               content: Table(
                 border: TableBorder.all(color: Colors.black54, width: 1),
                 columnWidths: const {
-                  0: FlexColumnWidth(2),
-                  1: FlexColumnWidth(2),
+                  0: FlexColumnWidth(0.7),
+                  1: FlexColumnWidth(1.5),
+                  2: FlexColumnWidth(2),
+                  3: FlexColumnWidth(1.5),
                 },
-                children: crabTypeController.crabTypes.map((crabType) {
-                  return TableRow(
-                    children: [
-                      TableCell(
-                        child: Padding(
-                          padding: const EdgeInsets.all(12.0),
-                          child: Text(crabType.name,
-                              style: const TextStyle(fontSize: 24)),
+                children: List.generate(
+                  crabTypeController.crabTypes.length,
+                  (index) {
+                    final crabType = crabTypeController.crabTypes[index];
+                    final currentWeight =
+                        crabTypeController.getCurrentWeight(crabType.id);
+                    return TableRow(
+                      children: [
+                        TableCell(
+                          child: Padding(
+                            padding: const EdgeInsets.all(12.0),
+                            child: Text(
+                              (index + 1).toString(),
+                              style: const TextStyle(fontSize: 15),
+                            ),
+                          ),
                         ),
-                      ),
-                      TableCell(
-                        child: Padding(
-                          padding: const EdgeInsets.all(12.0),
-                          child: Text(
-                              formatNumberWithoutSymbol(crabType.pricePerKg),
-                              style: const TextStyle(fontSize: 20)),
+                        TableCell(
+                          child: Padding(
+                            padding: const EdgeInsets.all(12.0),
+                            child: Text(
+                              crabType.name,
+                              style: const TextStyle(fontSize: 18),
+                            ),
+                          ),
                         ),
-                      ),
-                    ],
-                  );
-                }).toList(),
+                        TableCell(
+                          child: Padding(
+                            padding: const EdgeInsets.all(12.0),
+                            child: Text(
+                              formatCurrency(crabType.pricePerKg),
+                              style: const TextStyle(fontSize: 17),
+                            ),
+                          ),
+                        ),
+                        TableCell(
+                          child: Padding(
+                            padding: const EdgeInsets.all(12.0),
+                            child: Text(
+                              formatWeightWithUnit(currentWeight),
+                              style: const TextStyle(fontSize: 18),
+                            ),
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                ),
               ),
             ),
           ),
         );
       }),
-      backgroundColor: AppColors.backgroundColor,
     );
   }
 
   Widget _buildShimmerEffect() {
+    return SingleChildScrollView(
+      scrollDirection: Axis.vertical,
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Table(
+          border: TableBorder.all(color: Colors.black54, width: 1),
+          columnWidths: const {
+            0: FlexColumnWidth(1),
+            1: FlexColumnWidth(2),
+            2: FlexColumnWidth(2),
+            3: FlexColumnWidth(2),
+          },
+          children: List.generate(
+            10,
+            (index) => TableRow(
+              children: [
+                TableCell(child: _buildShimmerCell(width: 50)),
+                TableCell(child: _buildShimmerCell(width: 100)),
+                TableCell(child: _buildShimmerCell(width: 100)),
+                TableCell(child: _buildShimmerCell(width: 100)),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildShimmerCell({required double width}) {
     return Shimmer.fromColors(
       baseColor: Colors.grey[300]!,
       highlightColor: Colors.grey[100]!,
-      child: ListView.builder(
-        itemCount: 10,
-        itemBuilder: (context, index) {
-          return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-            child: Card(
-              elevation: 4,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10.0),
-                side: const BorderSide(color: Colors.grey, width: 1),
-              ),
-              child: const ListTile(
-                title: Text(''),
-                subtitle: Text(''),
-              ),
-            ),
-          );
-        },
+      child: Container(
+        width: width,
+        height: 16.0,
+        color: Colors.white,
       ),
     );
   }

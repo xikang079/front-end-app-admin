@@ -51,3 +51,7 @@ String formatShortenNumberWithoutSymbol(double number) {
     return formattedNumber;
   }
 }
+
+String formatWeightWithUnit(double weight) {
+  return '${weight.toStringAsFixed(2)} kg';
+}

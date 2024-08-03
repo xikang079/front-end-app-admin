@@ -4,30 +4,28 @@ import 'package:intl/intl.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 
-import '../../../controllers/crab_purchase_controller.dart';
-import '../../../widgets/confirm_dialog.dart';
 import '../../apps/apps_colors.dart';
 import '../../apps/format_vnd.dart';
+import '../../controllers/crab_purchase_controller.dart';
 
-class InvoiceManagementPage extends StatefulWidget {
-  final String depotId;
-
-  const InvoiceManagementPage({required this.depotId, super.key});
+class CrabPurchaseManagementPage extends StatefulWidget {
+  const CrabPurchaseManagementPage({super.key});
 
   @override
-  _InvoiceManagementPageState createState() => _InvoiceManagementPageState();
+  _CrabPurchaseManagementPageState createState() =>
+      _CrabPurchaseManagementPageState();
 }
 
-class _InvoiceManagementPageState extends State<InvoiceManagementPage> {
+class _CrabPurchaseManagementPageState
+    extends State<CrabPurchaseManagementPage> {
   final CrabPurchaseController _crabPurchaseController =
-      Get.put(CrabPurchaseController());
+      Get.put(CrabPurchaseController(Get.arguments['depotId'] as String));
   DateTime selectedDate = DateTime.now();
 
   @override
   void initState() {
     super.initState();
-    _crabPurchaseController.fetchCrabPurchasesByDate(
-        widget.depotId, selectedDate);
+    _crabPurchaseController.fetchCrabPurchasesByDate(selectedDate);
   }
 
   Future<void> _selectDate(BuildContext context) async {
@@ -36,22 +34,14 @@ class _InvoiceManagementPageState extends State<InvoiceManagementPage> {
       initialDate: selectedDate,
       firstDate: DateTime(2020),
       lastDate: DateTime(2101),
-      locale: const Locale('vi', 'VN'),
+      locale: const Locale('vi', 'VN'), // Thêm locale để thay đổi ngôn ngữ
     );
     if (picked != null && picked != selectedDate) {
       setState(() {
         selectedDate = picked;
       });
-      _crabPurchaseController.fetchCrabPurchasesByDate(
-          widget.depotId, selectedDate);
+      _crabPurchaseController.fetchCrabPurchasesByDate(selectedDate);
     }
-  }
-
-  bool _isToday(DateTime date) {
-    final now = DateTime.now();
-    return date.year == now.year &&
-        date.month == now.month &&
-        date.day == now.day;
   }
 
   @override
@@ -59,8 +49,8 @@ class _InvoiceManagementPageState extends State<InvoiceManagementPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Hóa đơn mua cua ngày ${DateFormat('dd/MM/yyyy').format(selectedDate)}',
-          style: const TextStyle(color: Colors.white, fontSize: 18),
+          'Hóa đơn ngày ${DateFormat('dd/MM/yyyy').format(selectedDate)}',
+          style: const TextStyle(color: Colors.white, fontSize: 20),
         ),
         backgroundColor: AppColors.primaryColor,
         toolbarHeight: 40,
@@ -72,8 +62,7 @@ class _InvoiceManagementPageState extends State<InvoiceManagementPage> {
               size: 30,
             ),
             onPressed: () {
-              _crabPurchaseController.fetchCrabPurchasesByDate(
-                  widget.depotId, selectedDate);
+              _crabPurchaseController.fetchCrabPurchasesByDate(selectedDate);
             },
           ),
         ],
@@ -87,7 +76,10 @@ class _InvoiceManagementPageState extends State<InvoiceManagementPage> {
               }
               if (_crabPurchaseController.crabPurchases.isEmpty) {
                 return const Center(
-                    child: Text('Không có hóa đơn nào cho ngày này.'));
+                    child: Text(
+                  'Không có hóa đơn nào cho ngày này.',
+                  style: TextStyle(fontSize: 18),
+                ));
               }
               return AnimationLimiter(
                 child: ListView.builder(
@@ -116,9 +108,13 @@ class _InvoiceManagementPageState extends State<InvoiceManagementPage> {
                                 margin: const EdgeInsets.all(8.0),
                                 child: ExpansionTile(
                                   title: Text(
-                                      'Thương lái: ${crabPurchase.trader.name}'),
+                                    'Thương lái: ${crabPurchase.trader.name}',
+                                    style: const TextStyle(fontSize: 18),
+                                  ),
                                   subtitle: Text(
-                                      'Tổng số tiền: ${formatCurrency(crabPurchase.totalCost)}'),
+                                    'Tổng số tiền: ${formatCurrency(crabPurchase.totalCost)}',
+                                    style: const TextStyle(fontSize: 16),
+                                  ),
                                   children: [
                                     SingleChildScrollView(
                                       scrollDirection: Axis.horizontal,
@@ -128,18 +124,25 @@ class _InvoiceManagementPageState extends State<InvoiceManagementPage> {
                                         children: [
                                           DataTable(
                                             headingRowColor:
-                                                WidgetStateProperty.resolveWith(
+                                                WidgetStateColor.resolveWith(
                                                     (states) =>
                                                         Colors.grey[300]!),
                                             columns: const [
                                               DataColumn(
-                                                  label: Text('Tên cua')),
+                                                  label: Text(
+                                                'Tên cua',
+                                                style: TextStyle(fontSize: 16),
+                                              )),
                                               DataColumn(
-                                                  label: Text('Số kí (kg)')),
+                                                  label: Text(
+                                                'Số kí (kg)',
+                                                style: TextStyle(fontSize: 16),
+                                              )),
                                               DataColumn(
-                                                  label: Text('Giá VNĐ/kg')),
-                                              DataColumn(
-                                                  label: Text('Tổng tiền')),
+                                                  label: Text(
+                                                'Giá VNĐ/kg',
+                                                style: TextStyle(fontSize: 16),
+                                              )),
                                             ],
                                             rows: crabPurchase.crabs
                                                 .asMap()
@@ -148,17 +151,23 @@ class _InvoiceManagementPageState extends State<InvoiceManagementPage> {
                                               var crabDetail = entry.value;
                                               return DataRow(cells: [
                                                 DataCell(Text(
-                                                    crabDetail.crabType.name)),
-                                                DataCell(Text(crabDetail.weight
-                                                    .toString()
-                                                    .replaceAll(',', '.'))),
+                                                  crabDetail.crabType.name,
+                                                  style: const TextStyle(
+                                                      fontSize: 14),
+                                                )),
                                                 DataCell(Text(
-                                                    formatNumberWithoutSymbol(
-                                                        crabDetail
-                                                            .pricePerKg))),
+                                                  crabDetail.weight
+                                                      .toString()
+                                                      .replaceAll(',', '.'),
+                                                  style: const TextStyle(
+                                                      fontSize: 14),
+                                                )),
                                                 DataCell(Text(
-                                                    formatNumberWithoutSymbol(
-                                                        crabDetail.totalCost))),
+                                                  formatNumberWithoutSymbol(
+                                                      crabDetail.pricePerKg),
+                                                  style: const TextStyle(
+                                                      fontSize: 14),
+                                                )),
                                               ]);
                                             }).toList(),
                                           ),
@@ -168,7 +177,9 @@ class _InvoiceManagementPageState extends State<InvoiceManagementPage> {
                                   ],
                                 ),
                               ),
-                              const SizedBox(height: 5),
+                              const SizedBox(
+                                height: 5,
+                              )
                             ],
                           ),
                         ),
@@ -194,7 +205,9 @@ class _InvoiceManagementPageState extends State<InvoiceManagementPage> {
                   style: TextButton.styleFrom(
                     backgroundColor: Colors.white,
                     padding: const EdgeInsets.symmetric(
-                        vertical: 12.0, horizontal: 16.0),
+                      vertical: 12.0,
+                      horizontal: 16.0,
+                    ),
                     shape: RoundedRectangleBorder(
                       side: const BorderSide(color: Colors.grey, width: 3),
                       borderRadius: BorderRadius.circular(8.0),

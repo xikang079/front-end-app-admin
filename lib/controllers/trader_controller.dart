@@ -1,43 +1,39 @@
-import 'dart:ui';
-
 import 'package:get/get.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import '../models/trader_model.dart';
 import '../services/trader_service.dart';
-import '../apps/apps_colors.dart';
+import 'crab_purchase_controller.dart';
 
 class TraderController extends GetxController {
-  final ApiServiceTrader apiServiceTrader = ApiServiceTrader();
   var traders = <Trader>[].obs;
-  var isLoading = false.obs;
+  var isLoading = true.obs;
+  final ApiServiceTrader traderService = ApiServiceTrader();
+  late final String depotId;
+  late final CrabPurchaseController crabPurchaseController;
+
+  TraderController(this.depotId);
 
   @override
   void onInit() {
     super.onInit();
+    crabPurchaseController = Get.put(CrabPurchaseController(depotId));
     fetchTraders();
   }
 
-  Future<void> fetchTraders() async {
-    isLoading.value = true;
-    EasyLoading.show(status: 'Đang tải...');
+  void fetchTraders() async {
     try {
-      List<Trader> fetchedTraders = await apiServiceTrader.getAllTraders();
+      isLoading(true);
+      EasyLoading.show(status: 'Đang tải dữ liệu...');
+      var fetchedTraders = await traderService.getAllTraders(depotId);
       traders.assignAll(fetchedTraders);
-    } catch (e) {
-      showSnackbar(
-          'Lỗi', 'Không thể tải danh sách thương lái', AppColors.errorColor);
+      crabPurchaseController.fetchCrabPurchasesByDate(DateTime.now());
     } finally {
-      isLoading.value = false;
+      isLoading(false);
       EasyLoading.dismiss();
     }
   }
 
-  void showSnackbar(String title, String message, Color backgroundColor) {
-    Get.snackbar(
-      title,
-      message,
-      backgroundColor: backgroundColor,
-      colorText: AppColors.buttonTextColor,
-    );
+  bool hasSoldCrabs(String traderId) {
+    return crabPurchaseController.hasSoldCrabsByTrader(traderId);
   }
 }

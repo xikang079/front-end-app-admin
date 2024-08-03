@@ -4,18 +4,15 @@ import 'package:sticky_headers/sticky_headers.dart';
 import 'package:shimmer/shimmer.dart';
 
 import '../../../controllers/trader_controller.dart';
-import '../../../controllers/crab_purchase_controller.dart';
+import '../../../models/trader_model.dart';
 import '../../apps/apps_colors.dart';
-import '../../models/trader_model.dart';
 
 class TraderManagementPage extends StatelessWidget {
   const TraderManagementPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final TraderController traderController = Get.put(TraderController());
-    final CrabPurchaseController crabPurchaseController =
-        Get.put(CrabPurchaseController());
+    final TraderController traderController = Get.find<TraderController>();
 
     return Scaffold(
       appBar: AppBar(
@@ -31,8 +28,6 @@ class TraderManagementPage extends StatelessWidget {
             ),
             onPressed: () {
               traderController.fetchTraders();
-              crabPurchaseController.fetchCrabPurchasesByDateRange(
-                  'depotId', DateTime.now(), DateTime.now());
             },
           ),
         ],
@@ -85,6 +80,14 @@ class TraderManagementPage extends StatelessWidget {
                                   fontSize: 16, fontWeight: FontWeight.bold)),
                         ),
                       ),
+                      TableCell(
+                        child: Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: Text('Trạng thái',
+                              style: TextStyle(
+                                  fontSize: 16, fontWeight: FontWeight.bold)),
+                        ),
+                      ),
                     ],
                   ),
                 ],
@@ -100,6 +103,7 @@ class TraderManagementPage extends StatelessWidget {
                 children: traderController.traders.asMap().entries.map((entry) {
                   int index = entry.key;
                   Trader trader = entry.value;
+                  bool hasSold = traderController.hasSoldCrabs(trader.id);
                   return TableRow(
                     children: [
                       TableCell(
@@ -123,6 +127,17 @@ class TraderManagementPage extends StatelessWidget {
                               style: const TextStyle(fontSize: 18)),
                         ),
                       ),
+                      TableCell(
+                        child: Padding(
+                          padding: const EdgeInsets.all(12.0),
+                          child: Text(
+                            hasSold ? 'Đã bán' : 'Chưa bán',
+                            style: TextStyle(
+                                fontSize: 14,
+                                color: hasSold ? Colors.green : Colors.red),
+                          ),
+                        ),
+                      ),
                     ],
                   );
                 }).toList(),
@@ -131,7 +146,6 @@ class TraderManagementPage extends StatelessWidget {
           ),
         );
       }),
-      backgroundColor: AppColors.backgroundColor,
     );
   }
 

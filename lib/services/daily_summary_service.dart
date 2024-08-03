@@ -2,12 +2,12 @@ import 'package:dio/dio.dart';
 import '../models/daily_summary_model.dart';
 import 'local_storage_service.dart';
 
-class ApiDailySummaryService {
+class ApiServiceDailySummary {
   static const String baseUrl =
       'https://back-end-app-cua.onrender.com/crabPurchases';
   final Dio _dio;
 
-  ApiDailySummaryService()
+  ApiServiceDailySummary()
       : _dio = Dio(
           BaseOptions(
             baseUrl: baseUrl,
@@ -18,7 +18,9 @@ class ApiDailySummaryService {
     _dio.interceptors.add(InterceptorsWrapper(
       onRequest: (options, handler) async {
         String? token = await LocalStorageService.getToken();
+        String? userId = await LocalStorageService.getUserId();
         options.headers['Authorization'] = 'Bearer $token';
+        options.headers['x-user-id'] = userId;
         return handler.next(options);
       },
       onResponse: (response, handler) {
@@ -30,16 +32,30 @@ class ApiDailySummaryService {
     ));
   }
 
-  Future<List<DailySummary>> getDailySummariesByDepotAndDate(
-      String depotId, DateTime date) async {
+  Future<DailySummary?> getDailySummaryByDepotToday(String depotId) async {
     try {
-      String formattedDate = date.toIso8601String().split('T')[0];
-      Response response =
-          await _dio.get('/depot/$depotId/summaries/date/$formattedDate');
+      Response response = await _dio.get('/depot/$depotId/summary/today');
+      if (response.statusCode == 200) {
+        var data = response.data['message']['metadata'];
+        if (data != null && data is Map<String, dynamic>) {
+          return DailySummary.fromJson(data);
+        }
+      }
+      return null;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  Future<List<DailySummary>> getAllDailySummariesByDepot(String depotId) async {
+    try {
+      Response response = await _dio.get('/depot/$depotId/summaries');
       if (response.statusCode == 200) {
         var data = response.data['message']['metadata'];
         if (data != null && data is List) {
-          return data.map((e) => DailySummary.fromJson(e)).toList();
+          return data
+              .map<DailySummary>((e) => DailySummary.fromJson(e))
+              .toList();
         }
       }
       return [];
@@ -56,7 +72,9 @@ class ApiDailySummaryService {
       if (response.statusCode == 200) {
         var data = response.data['message']['metadata'];
         if (data != null && data is List) {
-          return data.map((e) => DailySummary.fromJson(e)).toList();
+          return data
+              .map<DailySummary>((e) => DailySummary.fromJson(e))
+              .toList();
         }
       }
       return [];
