@@ -2,7 +2,7 @@
 import 'package:intl/intl.dart';
 
 String formatCurrency(double value) {
-  final formatter = NumberFormat.currency(locale: 'vi_VN', symbol: 'VNĐ');
+  final formatter = NumberFormat.currency(locale: 'vi_VN', symbol: '');
   return formatter.format(value);
 }
 

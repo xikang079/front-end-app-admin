@@ -110,7 +110,7 @@ class TraderManagementPage extends StatelessWidget {
                         child: Padding(
                           padding: const EdgeInsets.all(12.0),
                           child: Text((index + 1).toString(),
-                              style: const TextStyle(fontSize: 20)),
+                              style: const TextStyle(fontSize: 16)),
                         ),
                       ),
                       TableCell(

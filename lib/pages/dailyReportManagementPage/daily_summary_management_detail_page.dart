@@ -75,8 +75,8 @@ class DailySummaryDetailView extends StatelessWidget {
                   columnWidths: const {
                     0: FlexColumnWidth(0.7),
                     1: FlexColumnWidth(1.4),
-                    2: FlexColumnWidth(1.2),
-                    3: FlexColumnWidth(2.4),
+                    2: FlexColumnWidth(1.4),
+                    3: FlexColumnWidth(2.3),
                   },
                   children: [
                     TableRow(
@@ -84,10 +84,11 @@ class DailySummaryDetailView extends StatelessWidget {
                       children: const [
                         TableCell(
                           child: Padding(
-                            padding: EdgeInsets.all(8.0),
+                            padding: EdgeInsets.only(
+                                top: 8.0, bottom: 8.0, left: 4.0),
                             child: Text('STT',
                                 style: TextStyle(
-                                    fontSize: 16, fontWeight: FontWeight.bold)),
+                                    fontSize: 15, fontWeight: FontWeight.bold)),
                           ),
                         ),
                         TableCell(

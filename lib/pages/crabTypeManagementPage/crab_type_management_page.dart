@@ -30,116 +30,144 @@ class CrabTypeManagementPage extends StatelessWidget {
           return const Center(child: Text('Không có loại cua nào'));
         }
 
+        final totalWeight = crabTypeController.crabTypes.fold(
+            0.0,
+            (sum, crabType) =>
+                sum + crabTypeController.getCurrentWeight(crabType.id));
+        final estimatedBoxes =
+            (totalWeight / 24).toInt() + ((totalWeight % 24) >= 12 ? 1 : 0);
+
         return SingleChildScrollView(
           scrollDirection: Axis.vertical,
           child: Padding(
             padding: const EdgeInsets.all(10.0),
-            child: StickyHeader(
-              header: Table(
-                border: TableBorder.all(color: Colors.black54, width: 1),
-                columnWidths: const {
-                  0: FlexColumnWidth(0.7),
-                  1: FlexColumnWidth(1.5),
-                  2: FlexColumnWidth(2),
-                  3: FlexColumnWidth(1.5),
-                },
-                children: [
-                  TableRow(
-                    decoration: BoxDecoration(color: Colors.grey[300]),
-                    children: const [
-                      TableCell(
-                        child: Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: Text('STT',
-                              style: TextStyle(
-                                  fontSize: 16, fontWeight: FontWeight.bold)),
-                        ),
-                      ),
-                      TableCell(
-                        child: Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: Text('Loại cua',
-                              style: TextStyle(
-                                  fontSize: 18, fontWeight: FontWeight.bold)),
-                        ),
-                      ),
-                      TableCell(
-                        child: Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: Text('Giá',
-                              style: TextStyle(
-                                  fontSize: 18, fontWeight: FontWeight.bold)),
-                        ),
-                      ),
-                      TableCell(
-                        child: Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: Text('Đang có',
-                              style: TextStyle(
-                                  fontSize: 18, fontWeight: FontWeight.bold)),
-                        ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Tổng số kg hiện tại: ${formatWeightWithUnit(totalWeight)}',
+                  style: const TextStyle(
+                      fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+                Text(
+                  'Dự đoán số thùng cua: $estimatedBoxes',
+                  style: const TextStyle(
+                      fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 10),
+                StickyHeader(
+                  header: Table(
+                    border: TableBorder.all(color: Colors.black54, width: 1),
+                    columnWidths: const {
+                      0: FlexColumnWidth(0.7),
+                      1: FlexColumnWidth(1.5),
+                      2: FlexColumnWidth(2),
+                      3: FlexColumnWidth(1.5),
+                    },
+                    children: [
+                      TableRow(
+                        decoration: BoxDecoration(color: Colors.grey[300]),
+                        children: const [
+                          TableCell(
+                            child: Padding(
+                              padding: EdgeInsets.only(
+                                  top: 8.0, bottom: 8.0, left: 4.0),
+                              child: Text('STT',
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold)),
+                            ),
+                          ),
+                          TableCell(
+                            child: Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: Text('Loại cua',
+                                  style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold)),
+                            ),
+                          ),
+                          TableCell(
+                            child: Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: Text('Giá',
+                                  style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold)),
+                            ),
+                          ),
+                          TableCell(
+                            child: Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: Text('Đang có',
+                                  style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold)),
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
-                ],
-              ),
-              content: Table(
-                border: TableBorder.all(color: Colors.black54, width: 1),
-                columnWidths: const {
-                  0: FlexColumnWidth(0.7),
-                  1: FlexColumnWidth(1.5),
-                  2: FlexColumnWidth(2),
-                  3: FlexColumnWidth(1.5),
-                },
-                children: List.generate(
-                  crabTypeController.crabTypes.length,
-                  (index) {
-                    final crabType = crabTypeController.crabTypes[index];
-                    final currentWeight =
-                        crabTypeController.getCurrentWeight(crabType.id);
-                    return TableRow(
-                      children: [
-                        TableCell(
-                          child: Padding(
-                            padding: const EdgeInsets.all(12.0),
-                            child: Text(
-                              (index + 1).toString(),
-                              style: const TextStyle(fontSize: 15),
+                  content: Table(
+                    border: TableBorder.all(color: Colors.black54, width: 1),
+                    columnWidths: const {
+                      0: FlexColumnWidth(0.7),
+                      1: FlexColumnWidth(1.5),
+                      2: FlexColumnWidth(2),
+                      3: FlexColumnWidth(1.5),
+                    },
+                    children: List.generate(
+                      crabTypeController.crabTypes.length,
+                      (index) {
+                        final crabType = crabTypeController.crabTypes[index];
+                        final currentWeight =
+                            crabTypeController.getCurrentWeight(crabType.id);
+                        return TableRow(
+                          children: [
+                            TableCell(
+                              child: Padding(
+                                padding: const EdgeInsets.all(12.0),
+                                child: Text(
+                                  (index + 1).toString(),
+                                  style: const TextStyle(fontSize: 13),
+                                ),
+                              ),
                             ),
-                          ),
-                        ),
-                        TableCell(
-                          child: Padding(
-                            padding: const EdgeInsets.all(12.0),
-                            child: Text(
-                              crabType.name,
-                              style: const TextStyle(fontSize: 18),
+                            TableCell(
+                              child: Padding(
+                                padding: const EdgeInsets.all(12.0),
+                                child: Text(
+                                  crabType.name,
+                                  style: const TextStyle(fontSize: 18),
+                                ),
+                              ),
                             ),
-                          ),
-                        ),
-                        TableCell(
-                          child: Padding(
-                            padding: const EdgeInsets.all(12.0),
-                            child: Text(
-                              formatCurrency(crabType.pricePerKg),
-                              style: const TextStyle(fontSize: 17),
+                            TableCell(
+                              child: Padding(
+                                padding: const EdgeInsets.all(12.0),
+                                child: Text(
+                                  formatCurrency(crabType.pricePerKg),
+                                  style: const TextStyle(fontSize: 17),
+                                ),
+                              ),
                             ),
-                          ),
-                        ),
-                        TableCell(
-                          child: Padding(
-                            padding: const EdgeInsets.all(12.0),
-                            child: Text(
-                              formatWeightWithUnit(currentWeight),
-                              style: const TextStyle(fontSize: 18),
+                            TableCell(
+                              child: Padding(
+                                padding: const EdgeInsets.all(12.0),
+                                child: Text(
+                                  formatWeightWithUnit(currentWeight),
+                                  style: const TextStyle(fontSize: 18),
+                                ),
+                              ),
                             ),
-                          ),
-                        ),
-                      ],
-                    );
-                  },
+                          ],
+                        );
+                      },
+                    ),
+                  ),
                 ),
-              ),
+              ],
             ),
           ),
         );
