@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import '../OverviewUserPage/overview_user_page.dart';
 import '../managmentUserPage/managment_user_page.dart';
 import '../settingPage/setting_page.dart';
 
@@ -13,9 +13,10 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
 
-  static const List<Widget> _widgetOptions = <Widget>[
-    ManagmentUserPage(),
-    SettingPage(),
+  static final List<Widget> _widgetOptions = <Widget>[
+    const ManagmentUserPage(),
+    DepotOverviewPage(),
+    const SettingPage(),
   ];
 
   void _onItemTapped(int index) {
@@ -35,6 +36,10 @@ class _HomePageState extends State<HomePage> {
           BottomNavigationBarItem(
             icon: Icon(Icons.people),
             label: 'Quản lý vựa cua',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.people),
+            label: 'Quản lý tổng',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.settings),

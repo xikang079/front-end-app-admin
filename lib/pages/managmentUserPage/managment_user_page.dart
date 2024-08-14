@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import '../../controllers/user_controller.dart';
 
@@ -15,11 +16,11 @@ class ManagmentUserPage extends StatelessWidget {
       ),
       body: Obx(() {
         if (userController.isLoading.value) {
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
+          EasyLoading.show(status: 'Đang tải dữ liệu...');
+          return Container();
         }
-
+        // EasyLoading.showSuccess('Xong');
+        EasyLoading.dismiss();
         return ListView.builder(
           padding: const EdgeInsets.all(8.0),
           itemCount: userController.users.length,
