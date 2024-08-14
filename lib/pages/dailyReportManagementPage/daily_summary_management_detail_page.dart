@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
 import '../../apps/apps_colors.dart';
 import '../../apps/format_vnd.dart';
 import '../../controllers/crab_type_controller.dart';
+import '../../models/crab_type_model.dart';
 import '../../models/daily_summary_model.dart';
 
 class DailySummaryDetailView extends StatelessWidget {
@@ -26,7 +28,19 @@ class DailySummaryDetailView extends StatelessWidget {
 
     // Sort details according to the total weight
     List<SummaryDetail> sortedDetails = List.from(dailySummary.details);
-    sortedDetails.sort((a, b) => b.totalWeight.compareTo(a.totalWeight));
+    sortedDetails.sort((a, b) {
+      CrabType? crabTypeA = crabTypeController.crabTypes
+          .firstWhereOrNull((crabType) => crabType.id == a.crabType);
+      CrabType? crabTypeB = crabTypeController.crabTypes
+          .firstWhereOrNull((crabType) => crabType.id == b.crabType);
+
+      if (crabTypeA == null || crabTypeB == null) {
+        // Nếu không tìm thấy CrabType, đẩy các mục này xuống cuối
+        return crabTypeA == null ? 1 : -1;
+      }
+
+      return crabTypeA.createdAt.compareTo(crabTypeB.createdAt);
+    });
 
     return Scaffold(
       appBar: AppBar(
@@ -40,10 +54,33 @@ class DailySummaryDetailView extends StatelessWidget {
       ),
       body: Obx(() {
         if (crabTypeController.isLoading.value) {
-          return const Center(
-            child: CircularProgressIndicator(),
+          return Center(
+            child: Container(),
           );
         }
+
+        // Kiểm tra xem crabTypes đã được tải đầy đủ hay chưa
+        if (crabTypeController.crabTypes.isEmpty) {
+          return const Center(
+            child: Text('Đang tải dữ liệu...'),
+          );
+        }
+
+        // Sắp xếp sau khi dữ liệu đã sẵn sàng
+        List<SummaryDetail> sortedDetails = List.from(dailySummary.details);
+        sortedDetails.sort((a, b) {
+          CrabType? crabTypeA = crabTypeController.crabTypes
+              .firstWhereOrNull((crabType) => crabType.id == a.crabType);
+          CrabType? crabTypeB = crabTypeController.crabTypes
+              .firstWhereOrNull((crabType) => crabType.id == b.crabType);
+
+          if (crabTypeA == null || crabTypeB == null) {
+            return crabTypeA == null ? 1 : -1;
+          }
+
+          return crabTypeA.createdAt.compareTo(crabTypeB.createdAt);
+        });
+
         return Padding(
           padding: const EdgeInsets.all(16.0),
           child: SingleChildScrollView(
