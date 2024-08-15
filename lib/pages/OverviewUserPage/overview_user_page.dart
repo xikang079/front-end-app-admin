@@ -101,13 +101,13 @@ class DepotOverviewPage extends StatelessWidget {
           const SizedBox(height: 16),
           _buildSummaryCard(
             title: 'Tổng Số Ký Tất Cả Vựa',
-            value: formatWeightWithUnit(controller.totalWeight.value),
+            value: '${formatWeight(controller.totalWeight.value)}Kg',
             color: Colors.blueAccent,
           ),
           const SizedBox(height: 16),
           _buildSummaryCard(
             title: 'Tổng Số Tiền Đã Mua Tất Cả Vựa',
-            value: '${formatCurrency(controller.totalCost.value)} VND',
+            value: '${formatCurrency(controller.totalCost.value)} VNĐ',
             color: Colors.green,
           ),
           const SizedBox(height: 16),
@@ -193,12 +193,12 @@ class DepotOverviewPage extends StatelessWidget {
     return Column(
       children: [
         _buildPieChartSection(
-          title: 'Phân Bố Trọng Lượng Theo Vựa',
+          title: 'Phân Bố Số Kí Theo Vựa',
           data: _getWeightData(),
         ),
         const SizedBox(height: 16),
         _buildPieChartSection(
-          title: 'Phân Bố Chi Phí Theo Vựa',
+          title: 'Phân Bố Tiền Mua Theo Vựa',
           data: _getCostData(),
         ),
         const SizedBox(height: 16),

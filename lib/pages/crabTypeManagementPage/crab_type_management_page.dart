@@ -45,14 +45,14 @@ class CrabTypeManagementPage extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Tổng số kg hiện tại: ${formatWeightWithUnit(totalWeight)}',
+                  'Tổng số kg hiện tại: ${formatWeight(totalWeight)} Kg',
                   style: const TextStyle(
-                      fontSize: 18, fontWeight: FontWeight.bold),
+                      fontSize: 22, fontWeight: FontWeight.bold),
                 ),
                 Text(
                   'Dự đoán số thùng cua: $estimatedBoxes',
                   style: const TextStyle(
-                      fontSize: 18, fontWeight: FontWeight.bold),
+                      fontSize: 22, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 10),
                 StickyHeader(
@@ -156,7 +156,7 @@ class CrabTypeManagementPage extends StatelessWidget {
                               child: Padding(
                                 padding: const EdgeInsets.all(12.0),
                                 child: Text(
-                                  formatWeightWithUnit(currentWeight),
+                                  '${formatWeight(currentWeight)}Kg',
                                   style: const TextStyle(fontSize: 18),
                                 ),
                               ),

@@ -156,9 +156,8 @@ class _CrabPurchaseManagementPageState
                                                       fontSize: 14),
                                                 )),
                                                 DataCell(Text(
-                                                  crabDetail.weight
-                                                      .toString()
-                                                      .replaceAll(',', '.'),
+                                                  formatWeight(
+                                                      crabDetail.weight),
                                                   style: const TextStyle(
                                                       fontSize: 14),
                                                 )),

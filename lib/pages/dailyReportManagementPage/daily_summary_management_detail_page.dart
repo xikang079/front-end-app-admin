@@ -93,18 +93,27 @@ class DailySummaryDetailView extends StatelessWidget {
                 ),
                 const SizedBox(height: 8.0),
                 Text(
-                  'Tổng số tiền: ${formatCurrency(dailySummary.totalAmount)}',
-                  style: const TextStyle(fontSize: 18),
+                  'Tổng số tiền mua: ${formatCurrency(dailySummary.totalAmount)}VND',
+                  style: const TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 const SizedBox(height: 8.0),
                 Text(
-                  'Tổng số ký: ${formatWeight(totalWeight)} kg',
-                  style: const TextStyle(fontSize: 18),
+                  'Tổng số kí: ${formatWeight(totalWeight)} kg',
+                  style: const TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 const SizedBox(height: 8.0),
                 Text(
                   'Dự đoán số thùng: $estimatedCrates thùng',
-                  style: const TextStyle(fontSize: 18),
+                  style: const TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 const SizedBox(height: 16.0),
                 Table(
@@ -201,13 +210,5 @@ class DailySummaryDetailView extends StatelessWidget {
         );
       }),
     );
-  }
-
-  String formatWeight(double weight) {
-    if (weight % 1 == 0) {
-      return weight.toStringAsFixed(0);
-    } else {
-      return weight.toStringAsFixed(2);
-    }
   }
 }
