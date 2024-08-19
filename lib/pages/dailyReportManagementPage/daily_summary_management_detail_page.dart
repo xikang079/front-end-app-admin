@@ -21,6 +21,7 @@ class DailySummaryDetailView extends StatelessWidget {
   Widget build(BuildContext context) {
     final CrabTypeController crabTypeController =
         Get.find<CrabTypeController>();
+    final depotName = Get.arguments['depotName'] as String;
 
     double totalWeight = dailySummary.details
         .fold(0.0, (sum, detail) => sum + detail.totalWeight);
@@ -44,9 +45,9 @@ class DailySummaryDetailView extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'Báo cáo mua trong ngày',
-          style: TextStyle(
+        title: Text(
+          'Báo cáo mua $depotName',
+          style: const TextStyle(
             color: Colors.white,
           ),
         ),

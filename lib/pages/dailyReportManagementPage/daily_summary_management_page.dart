@@ -18,14 +18,15 @@ class DailySummaryManagementPage extends StatelessWidget {
     return '${date.day.toString().padLeft(2, '0')}-${date.month.toString().padLeft(2, '0')}-${date.year}';
   }
 
+  final String depotName = Get.arguments['depotName'] ?? 'Tên vựa cua';
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: 40,
-        title: const Text(
-          'Quản lí báo cáo cuối ngày',
-          style: TextStyle(color: Colors.white, fontSize: 18),
+        title: Text(
+          'Báo cáo $depotName',
+          style: const TextStyle(color: Colors.white, fontSize: 22),
         ),
         backgroundColor: AppColors.primaryColor,
         actions: [
@@ -170,6 +171,8 @@ class DailySummaryManagementPage extends StatelessWidget {
                                         ),
                                         arguments: {
                                           'depotId': Get.arguments['depotId'],
+                                          'depotName':
+                                              Get.arguments['depotName'],
                                         },
                                       );
                                     },

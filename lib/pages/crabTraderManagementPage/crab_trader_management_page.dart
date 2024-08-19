@@ -13,11 +13,12 @@ class TraderManagementPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final TraderController traderController = Get.find<TraderController>();
+    final String depotName = Get.arguments['depotName'] ?? 'Tên vựa cua';
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Quản lí thương lái',
-            style: TextStyle(color: Colors.white)),
+        title: Text('Thương lái $depotName',
+            style: const TextStyle(color: Colors.white)),
         backgroundColor: AppColors.primaryColor,
         actions: [
           IconButton(

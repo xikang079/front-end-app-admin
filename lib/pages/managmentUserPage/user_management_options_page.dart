@@ -89,7 +89,10 @@ class UserManagementOptionsPage extends StatelessWidget {
           ),
           trailing: const Icon(Icons.arrow_forward_ios, color: Colors.white),
           onTap: () {
-            Get.toNamed(routeName, arguments: {'depotId': depotId});
+            Get.toNamed(routeName, arguments: {
+              'depotId': depotId,
+              'depotName': user.fullname,
+            });
           },
         ),
       ),

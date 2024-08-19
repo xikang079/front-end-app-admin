@@ -3,6 +3,11 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import '../../controllers/user_controller.dart';
 
+import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:get/get.dart';
+import '../../controllers/user_controller.dart';
+
 class ManagmentUserPage extends StatelessWidget {
   const ManagmentUserPage({super.key});
 
@@ -19,13 +24,26 @@ class ManagmentUserPage extends StatelessWidget {
           EasyLoading.show(status: 'Đang tải dữ liệu...');
           return Container();
         }
-        // EasyLoading.showSuccess('Xong');
         EasyLoading.dismiss();
+
+        // Lọc danh sách người dùng để loại bỏ các admin
+        final nonAdminUsers =
+            userController.users.where((user) => user.role != 'admin').toList();
+
+        if (nonAdminUsers.isEmpty) {
+          return const Center(
+            child: Text(
+              'Không có người dùng nào để hiển thị.',
+              style: TextStyle(fontSize: 18),
+            ),
+          );
+        }
+
         return ListView.builder(
           padding: const EdgeInsets.all(8.0),
-          itemCount: userController.users.length,
+          itemCount: nonAdminUsers.length,
           itemBuilder: (context, index) {
-            final user = userController.users[index];
+            final user = nonAdminUsers[index];
             return Padding(
               padding: const EdgeInsets.symmetric(vertical: 8.0),
               child: Card(
@@ -61,11 +79,9 @@ class ManagmentUserPage extends StatelessWidget {
                       ],
                     ),
                   ),
-                  trailing: Icon(
-                    user.role == 'admin'
-                        ? Icons.admin_panel_settings
-                        : Icons.person,
-                    color: user.role == 'admin' ? Colors.red : Colors.blue,
+                  trailing: const Icon(
+                    Icons.person,
+                    color: Colors.blue,
                   ),
                   onTap: () {
                     Get.toNamed('/user-management-options', arguments: user);

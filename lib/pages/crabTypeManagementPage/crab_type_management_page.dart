@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:sticky_headers/sticky_headers.dart';
 
+import '../../apps/apps_colors.dart';
 import '../../apps/format_vnd.dart';
 import '../../controllers/crab_type_controller.dart';
 
@@ -14,11 +15,14 @@ class CrabTypeManagementPage extends StatelessWidget {
     final CrabTypeController crabTypeController =
         Get.find<CrabTypeController>();
 
+    final String depotName = Get.arguments['depotName'] ?? 'Tên vựa cua';
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'Quản lý loại cua',
-          style: TextStyle(fontSize: 22),
+        backgroundColor: AppColors.primaryColor,
+        title: Text(
+          'Quản lý loại cua $depotName',
+          style: const TextStyle(fontSize: 22, color: Colors.white),
         ),
       ),
       body: Obx(() {
@@ -156,7 +160,7 @@ class CrabTypeManagementPage extends StatelessWidget {
                               child: Padding(
                                 padding: const EdgeInsets.all(12.0),
                                 child: Text(
-                                  '${formatWeight(currentWeight)}Kg',
+                                  '${formatWeight(currentWeight)} Kg',
                                   style: const TextStyle(fontSize: 18),
                                 ),
                               ),
