@@ -1,9 +1,7 @@
 import 'package:get/get.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import '../apps/apps_colors.dart';
 import '../models/daily_summary_model.dart';
 import '../services/daily_summary_service.dart';
-import '../services/local_storage_service.dart';
 
 class DailySummaryController extends GetxController {
   final ApiServiceDailySummary apiService = ApiServiceDailySummary();

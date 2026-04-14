@@ -5,6 +5,7 @@ import '../bindings/crab_type_bindings.dart';
 import '../bindings/daily_summary_bindings.dart';
 import '../bindings/trader_bindings.dart';
 import '../bindings/user_binding.dart';
+import '../bindings/data_management_bindings.dart';
 import '../pages/CrabPurchaseManagementPage/crab_purchase_management_page.dart';
 import '../pages/crabTraderManagementPage/crab_trader_management_page.dart';
 import '../pages/crabTypeManagementPage/crab_type_management_page.dart';
@@ -15,12 +16,14 @@ import '../pages/managmentUserPage/managment_user_page.dart';
 import '../pages/managmentUserPage/user_management_options_page.dart';
 import '../pages/rootPage/root_page.dart';
 import '../pages/settingPage/setting_page.dart';
+import '../pages/dataManagementPage/data_management_page.dart';
+import '../pages/dataManagementPage/backup_history_page.dart';
 
 class AppRoutes {
   static final routes = [
     GetPage(
       name: '/',
-      page: () => RootPage(),
+      page: () => const RootPage(),
       binding: AuthBinding(),
     ),
     GetPage(
@@ -67,6 +70,17 @@ class AppRoutes {
       name: '/daily-summary-management',
       page: () => DailySummaryManagementPage(),
       binding: DailySummaryBinding(),
+    ),
+    // Data Management routes
+    GetPage(
+      name: '/data-management',
+      page: () => DataManagementPage(),
+      binding: DataManagementBinding(),
+    ),
+    GetPage(
+      name: '/backup-history',
+      page: () => const BackupHistoryPage(),
+      binding: DataManagementBinding(),
     ),
   ];
 }

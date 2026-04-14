@@ -25,17 +25,6 @@ class DepotOverviewPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Tổng Quan Tất Cả Vựa'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: () {
-              controller.fetchDepotOverview();
-            },
-          ),
-        ],
-      ),
       body: Obx(() {
         if (controller.isLoading.value) {
           EasyLoading.show(status: "Đang tính toán...");

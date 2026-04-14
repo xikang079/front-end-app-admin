@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:sticky_headers/sticky_headers.dart';
 
 import '../../apps/apps_colors.dart';
 import '../../apps/format_vnd.dart';
@@ -19,11 +18,24 @@ class CrabTypeManagementPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: AppColors.primaryColor,
         title: Text(
-          'Quản lý loại cua $depotName',
-          style: const TextStyle(fontSize: 22, color: Colors.white),
+          'Loại cua $depotName',
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
         ),
+        backgroundColor: AppColors.primaryColor,
+        elevation: 0,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.refresh, color: Colors.white),
+            onPressed: () {
+              crabTypeController.fetchCrabTypes();
+            },
+          ),
+        ],
       ),
       body: Obx(() {
         if (crabTypeController.isLoading.value) {
@@ -31,97 +43,88 @@ class CrabTypeManagementPage extends StatelessWidget {
         }
 
         if (crabTypeController.crabTypes.isEmpty) {
-          return const Center(child: Text('Không có loại cua nào'));
+          return const Center(
+            child: Text(
+              'Không có loại cua nào.',
+              style: TextStyle(fontSize: 18),
+            ),
+          );
         }
 
-        final totalWeight = crabTypeController.crabTypes.fold(
-            0.0,
-            (sum, crabType) =>
-                sum + crabTypeController.getCurrentWeight(crabType.id));
-        final estimatedBoxes =
-            (totalWeight / 24).toInt() + ((totalWeight % 24) >= 12 ? 1 : 0);
+        // Tính tổng trọng lượng và dự đoán số thùng
+        double totalWeight = 0.0;
+        for (var crabType in crabTypeController.crabTypes) {
+          totalWeight += crabTypeController.getCurrentWeight(crabType.id);
+        }
+        int estimatedBoxes = (totalWeight / 24).round();
 
         return SingleChildScrollView(
           scrollDirection: Axis.vertical,
           child: Padding(
-            padding: const EdgeInsets.all(10.0),
+            padding: const EdgeInsets.all(16.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Tổng số kg hiện tại: ${formatWeight(totalWeight)} Kg',
+                  'Tổng trọng lượng: ${formatWeight(totalWeight)} kg',
                   style: const TextStyle(
                       fontSize: 22, fontWeight: FontWeight.bold),
                 ),
+                const SizedBox(height: 10),
                 Text(
                   'Dự đoán số thùng cua: $estimatedBoxes',
                   style: const TextStyle(
                       fontSize: 22, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 10),
-                StickyHeader(
-                  header: Table(
-                    border: TableBorder.all(color: Colors.black54, width: 1),
-                    columnWidths: const {
-                      0: FlexColumnWidth(0.7),
-                      1: FlexColumnWidth(1.5),
-                      2: FlexColumnWidth(2),
-                      3: FlexColumnWidth(1.5),
-                    },
-                    children: [
-                      TableRow(
-                        decoration: BoxDecoration(color: Colors.grey[300]),
-                        children: const [
-                          TableCell(
-                            child: Padding(
-                              padding: EdgeInsets.only(
-                                  top: 8.0, bottom: 8.0, left: 4.0),
-                              child: Text('STT',
-                                  style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold)),
-                            ),
+                Table(
+                  border: TableBorder.all(color: Colors.black54, width: 1),
+                  columnWidths: const {
+                    0: FlexColumnWidth(0.7),
+                    1: FlexColumnWidth(1.5),
+                    2: FlexColumnWidth(2),
+                    3: FlexColumnWidth(1.5),
+                  },
+                  children: [
+                    TableRow(
+                      decoration: BoxDecoration(color: Colors.grey[300]),
+                      children: const [
+                        TableCell(
+                          child: Padding(
+                            padding: EdgeInsets.only(
+                                top: 8.0, bottom: 8.0, left: 4.0),
+                            child: Text('STT',
+                                style: TextStyle(
+                                    fontSize: 16, fontWeight: FontWeight.bold)),
                           ),
-                          TableCell(
-                            child: Padding(
-                              padding: EdgeInsets.all(8.0),
-                              child: Text('Loại cua',
-                                  style: TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold)),
-                            ),
+                        ),
+                        TableCell(
+                          child: Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: Text('Loại cua',
+                                style: TextStyle(
+                                    fontSize: 18, fontWeight: FontWeight.bold)),
                           ),
-                          TableCell(
-                            child: Padding(
-                              padding: EdgeInsets.all(8.0),
-                              child: Text('Giá',
-                                  style: TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold)),
-                            ),
+                        ),
+                        TableCell(
+                          child: Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: Text('Giá',
+                                style: TextStyle(
+                                    fontSize: 18, fontWeight: FontWeight.bold)),
                           ),
-                          TableCell(
-                            child: Padding(
-                              padding: EdgeInsets.all(8.0),
-                              child: Text('Đang có',
-                                  style: TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold)),
-                            ),
+                        ),
+                        TableCell(
+                          child: Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: Text('Đang có',
+                                style: TextStyle(
+                                    fontSize: 18, fontWeight: FontWeight.bold)),
                           ),
-                        ],
-                      ),
-                    ],
-                  ),
-                  content: Table(
-                    border: TableBorder.all(color: Colors.black54, width: 1),
-                    columnWidths: const {
-                      0: FlexColumnWidth(0.7),
-                      1: FlexColumnWidth(1.5),
-                      2: FlexColumnWidth(2),
-                      3: FlexColumnWidth(1.5),
-                    },
-                    children: List.generate(
+                        ),
+                      ],
+                    ),
+                    ...List.generate(
                       crabTypeController.crabTypes.length,
                       (index) {
                         final crabType = crabTypeController.crabTypes[index];
@@ -169,7 +172,7 @@ class CrabTypeManagementPage extends StatelessWidget {
                         );
                       },
                     ),
-                  ),
+                  ],
                 ),
               ],
             ),
@@ -213,9 +216,12 @@ class CrabTypeManagementPage extends StatelessWidget {
       baseColor: Colors.grey[300]!,
       highlightColor: Colors.grey[100]!,
       child: Container(
+        height: 20,
         width: width,
-        height: 16.0,
-        color: Colors.white,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(4),
+        ),
       ),
     );
   }

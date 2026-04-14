@@ -9,8 +9,9 @@ class ApiAuthService {
       : _dio = Dio(
           BaseOptions(
             baseUrl: baseUrl,
-            connectTimeout: const Duration(seconds: 5),
-            receiveTimeout: const Duration(seconds: 3),
+            connectTimeout: const Duration(seconds: 30),
+            receiveTimeout: const Duration(seconds: 30),
+            sendTimeout: const Duration(seconds: 30),
           ),
         ) {
     _dio.interceptors.add(InterceptorsWrapper(
@@ -40,6 +41,7 @@ class ApiAuthService {
         user.refreshToken = data['refreshToken'];
         return user;
       } else {
+        print('Login failed with status: ${response.statusCode}');
         return null;
       }
     } catch (e) {
@@ -49,42 +51,66 @@ class ApiAuthService {
   }
 
   Future<bool> checkTokenValidity(String token, String userId) async {
-    try {
-      Response response = await _dio.get(
-        '/auths/check-token',
-        options: Options(
-          headers: {
-            'Authorization': 'Bearer $token',
-            'x-user-id': userId,
-          },
-        ),
-      );
+    int maxRetries = 3;
+    int retryCount = 0;
 
-      return response.statusCode == 200;
-    } catch (e) {
-      return false;
+    while (retryCount < maxRetries) {
+      try {
+        Response response = await _dio.get(
+          '/auths/check-token',
+          options: Options(
+            headers: {
+              'Authorization': 'Bearer $token',
+              'x-user-id': userId,
+            },
+          ),
+        );
+
+        return response.statusCode == 200;
+      } catch (e) {
+        retryCount++;
+        if (retryCount >= maxRetries) {
+          print('Token validation failed after $maxRetries retries: $e');
+          return false;
+        }
+        // Chờ 2 giây trước khi retry
+        await Future.delayed(const Duration(seconds: 2));
+      }
     }
+    return false;
   }
 
   Future<User?> fetchUserDetails(String token, String userId) async {
-    try {
-      Response response = await _dio.get(
-        '/auths/info',
-        options: Options(
-          headers: {
-            'Authorization': 'Bearer $token',
-            'x-user-id': userId,
-          },
-        ),
-      );
+    int maxRetries = 3;
+    int retryCount = 0;
 
-      if (response.statusCode == 200) {
-        return User.fromJson(response.data['message']['metadata']);
-      } else {
-        return null;
+    while (retryCount < maxRetries) {
+      try {
+        Response response = await _dio.get(
+          '/auths/info',
+          options: Options(
+            headers: {
+              'Authorization': 'Bearer $token',
+              'x-user-id': userId,
+            },
+          ),
+        );
+
+        if (response.statusCode == 200) {
+          return User.fromJson(response.data['message']['metadata']);
+        } else {
+          return null;
+        }
+      } catch (e) {
+        retryCount++;
+        if (retryCount >= maxRetries) {
+          print('Fetch user details failed after $maxRetries retries: $e');
+          return null;
+        }
+        // Chờ 2 giây trước khi retry
+        await Future.delayed(const Duration(seconds: 2));
       }
-    } catch (e) {
-      return null;
     }
+    return null;
   }
 }

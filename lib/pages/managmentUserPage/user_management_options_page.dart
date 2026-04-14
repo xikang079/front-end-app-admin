@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../../models/user_model.dart';
 
 class UserManagementOptionsPage extends StatelessWidget {
@@ -21,7 +20,7 @@ class UserManagementOptionsPage extends StatelessWidget {
             _buildManagementCard(
               context,
               title: 'Quản lý loại cua đang mua của vựa',
-              icon: FontAwesomeIcons.cubes,
+              icon: Icons.inventory,
               colors: [Colors.blue, Colors.blue.shade700],
               routeName: '/crab-type-management',
               depotId: user.id,
@@ -29,7 +28,7 @@ class UserManagementOptionsPage extends StatelessWidget {
             _buildManagementCard(
               context,
               title: 'Quản lý hóa đơn theo ngày',
-              icon: FontAwesomeIcons.receipt,
+              icon: Icons.receipt,
               colors: [Colors.blue, Colors.blue.shade700],
               routeName: '/crab-purchase-management',
               depotId: user.id,
@@ -37,7 +36,7 @@ class UserManagementOptionsPage extends StatelessWidget {
             _buildManagementCard(
               context,
               title: 'Quản lý báo cáo theo ngày',
-              icon: FontAwesomeIcons.fileCircleCheck,
+              icon: Icons.assessment,
               colors: [Colors.blue, Colors.blue.shade700],
               routeName: '/daily-summary-management',
               depotId: user.id,
@@ -45,7 +44,7 @@ class UserManagementOptionsPage extends StatelessWidget {
             _buildManagementCard(
               context,
               title: 'Quản lý lái cua của vựa',
-              icon: FontAwesomeIcons.houseUser,
+              icon: Icons.person,
               colors: [Colors.blue, Colors.blue.shade700],
               routeName: '/trader-management',
               depotId: user.id,
@@ -78,7 +77,7 @@ class UserManagementOptionsPage extends StatelessWidget {
           ),
         ),
         child: ListTile(
-          leading: FaIcon(icon, size: 40, color: Colors.white),
+          leading: Icon(icon, size: 40, color: Colors.white),
           title: Text(
             title,
             style: const TextStyle(
